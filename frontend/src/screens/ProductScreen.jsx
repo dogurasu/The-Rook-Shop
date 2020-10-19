@@ -1,13 +1,29 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useState, useEffect} from 'react';
+// import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
-import products from '../products';
+// import products from '../products';
+import Axios from 'axios';
 
 const ProductScreen = ({ match }) => {
     // grab the product where the _id == _id in the request parameters
-    const product = products.find(p => p._id === match.params.id)
+    // const product = products.find(p => p._id === match.params.id)
+
+    const [product, setProduct] = useState({});
+
+    useEffect(() => {
+        const getProduct = async () => {
+            try {
+                const { data } = await Axios.get(`/api/v1/products/${match.params.id}`);
+                setProduct(data);
+            } catch(err) {
+                console.log(err);
+            }
+        }
+
+        getProduct();
+    }, [match])
 
     return (
         <>

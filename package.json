@@ -1,0 +1,33 @@
+{
+  "name": "e_commerce_shop",
+  "version": "1.0.0",
+  "description": "MERN Shopping cart app",
+  "main": "server.js",
+  "type": "module",
+  "dependencies": {
+    "express": "^4.17.1",
+    "react-bootstrap": "^1.3.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.5"
+  },
+  "scripts": {
+    "start": "node backend/server",
+    "server": "nodemon backend/server",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dogurasu/e_commerce_shop.git"
+  },
+  "author": "Dogurasu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dogurasu/e_commerce_shop/issues"
+  },
+  "homepage": "https://github.com/dogurasu/e_commerce_shop#readme"
+}

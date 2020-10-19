@@ -16,6 +16,11 @@ const router = express.Router();
 router.get('/', asyncHandler(async (req, res) => {
     // passing in an empty object returns everything
     const products = await Product.find({});
+
+    // purposefully output an error to test our error catching in Redux
+    // res.status(401);
+    // throw new Error('Not Authorized');
+
     res.json(products);
 }));
 

@@ -10,6 +10,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 
 // import our API router
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
@@ -17,12 +18,16 @@ connectDB();
 
 const app = express();
 
+// hooked up express.json middleware to accept JSON data in the req.body
+app.use(express.json())
+
 app.get('/', (req, res) => {
     res.send('API is running...');
 })
 
 // mount our routes for our API
 app.use('/api/v1/products', productRoutes);
+app.use('/api/v1/users', userRoutes);
 
 app.use(notFound);
 

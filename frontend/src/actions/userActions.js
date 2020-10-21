@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL } from '../constants/userConstants';
+import { USER_LOGIN_REQUEST, USER_LOGIN_SUCCESS, USER_LOGIN_FAIL, USER_LOGOUT } from '../constants/userConstants';
 
 export const login = (email, password) => async (dispatch) => {
     try {
@@ -32,4 +32,12 @@ export const login = (email, password) => async (dispatch) => {
             payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
     }
+}
+
+// do 2 things: 
+//      1. remove userInfo from localStorage
+//      2. dispatch userLogout action w/ the userLogout constant
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo');
+    dispatch({ type: USER_LOGOUT })
 }

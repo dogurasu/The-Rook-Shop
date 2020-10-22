@@ -1,5 +1,5 @@
 import axios from 'axios'; // we have axios bc when we add an item to the cart, we want to make a request to API products w/ the ID to get the fields (data) for that particular product
-import { CART_ADD_ITEM, CART_REMOVE_ITEM } from '../constants/cartConstants';
+import { CART_ADD_ITEM, CART_REMOVE_ITEM, CART_SAVE_SHIPPING_ADDRESS, CART_SAVE_PAYMENT_METHOD } from '../constants/cartConstants';
 
 
 export const addToCart = (id, qty) => async (dispatch, getState) => {
@@ -31,4 +31,23 @@ export const removeFromCart = (id) => (dispatch, getState) => {
         payload: id
     })
     localStorage.setItem('cartItems', JSON.stringify(getState().cart.cartItems));
+}
+
+// we pass in dispatch (to dispatch to our reducer) and getState so that we can get all the items in our cart so we can reset localStorage to whatever items are in our cart minus what we want to remove
+export const saveShippingAddress = (data) => (dispatch) => {
+    dispatch({
+        type: CART_SAVE_SHIPPING_ADDRESS,
+        payload: data
+    })
+
+    localStorage.setItem('shippingAddress', JSON.stringify(data));
+}
+
+export const savePaymentMethod = (method) => (dispatch) => {
+    dispatch({
+        type: CART_SAVE_PAYMENT_METHOD,
+        payload: method
+    })
+
+    localStorage.setItem('paymentMethod', JSON.stringify(method));
 }

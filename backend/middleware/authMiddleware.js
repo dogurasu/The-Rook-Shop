@@ -7,10 +7,10 @@ const protect = asyncHandler(async (req, res, next) => {
     let token;
 
     // get the JWT sent w/ key: Authorization and value: Bearer ___
-    if (req.body.headers.Authorization && req.body.headers.Authorization.startsWith('Bearer')) {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         try {
             // split the 'bearer' and 
-            token = req.body.headers.Authorization.split(' ')[1] // u just want tokens, not the bearer
+            token = req.headers.authorization.split(' ')[1] // u just want tokens, not the bearer
             const decoded = jwt.verify(token, process.env.JWT_SECRET); // try to verify the token
 
             // set the user in req found by id

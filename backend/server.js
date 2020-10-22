@@ -1,6 +1,3 @@
-// const express = require('express');
-// const dotenv = require('dotenv');
-// const products = require('./data/products');
 import express from 'express'
 import dotenv from 'dotenv';
 import colors from 'colors';
@@ -11,6 +8,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 // import our API router
 import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
 
 dotenv.config();
 
@@ -28,6 +26,7 @@ app.get('/', (req, res) => {
 // mount our routes for our API
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/orders', orderRoutes);
 
 app.use(notFound);
 

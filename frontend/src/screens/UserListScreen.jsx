@@ -8,7 +8,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { userListReducer } from '../reducers/userReducers';
 
-const UserListScreen = () => {
+const UserListScreen = ({ history }) => {
     // create dispatch
     const dispatch = useDispatch();
 
@@ -16,13 +16,18 @@ const UserListScreen = () => {
     const userList = useSelector(state => state.userList);
     const { loading, error, users } = userList;
 
-    // bring in 
-    // const userList = useSelector(state => state.userList);
-    // const { loading, error, users } = userList;
+    // bring userLogin to check if user visiting link is admin or not 
+    const userLogin = useSelector(state => state.userLogin);
+    const { userInfo } = userLogin;
 
     useEffect(() => {
-        dispatch(listUsers());
-    }, [dispatch])
+        // if we're an admin, dispatch listUsers action
+        if (userInfo && userInfo.isAdmin) {
+            dispatch(listUsers());
+        } else { // we're not admin
+            history.push('/login');
+        }
+    }, [dispatch, history])
 
     const deleteHandler = (id) => {
         console.log('delete');

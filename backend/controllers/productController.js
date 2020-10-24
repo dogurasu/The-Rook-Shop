@@ -29,20 +29,28 @@ const getProductById = asyncHandler(async (req, res) => {
         res.status(404); // .json({ message: "Product not found"})
         throw new Error('Product not found');
     }
-    // try {
-    //     // const product = products.find(p => p._id === req.params.id);
-    //     const product = await Product.findById(req.params.id);
+})
 
-    //     if (product) {
-    //         res.json(product);
-    //     } else {
-    //         res.status(404).json({ message: "Product not found"})
-    //     }
-    // } catch(err) {
-    //     console.log(`Error: ${err}`);
+// @desc   Delete a single product
+// @route  DELETE /api/products/:id
+// @access Private/Admin
+
+const deleteProduct = asyncHandler(async (req, res) => {
+    // first find the product
+    const product = await Product.findById(req.params.id);
+
+    // any admin could make or delete a product - u can change it so that the admin who created the product can only delete it
+    if (product) {
+        await product.remove();
+        res.json({ message: 'Product removed' })
+    } else {
+        res.status(404); // .json({ message: "Product not found"})
+        throw new Error('Product not found');
+    }
 })
 
 export {
     getProducts,
-    getProductById
+    getProductById,
+    deleteProduct
 }

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 // import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -11,12 +11,15 @@ import { listProductDetails } from '../actions/productActions';
 // import products from '../products';
 import axios from 'axios';
 
-const ProductScreen = ({ match }) => {
+const ProductScreen = ({ history, match }) => {
     // grab the product where the _id == _id in the request parameters
     // const product = products.find(p => p._id === match.params.id)
 
     // pre redux
     // const [product, setProduct] = useState({});
+
+    // keep track of the quantity we have (in stock)
+    const [qty, setQty] = useState(1); // one by default
 
     const dispatch = useDispatch();
 
@@ -39,6 +42,11 @@ const ProductScreen = ({ match }) => {
 
     }, [dispatch, match])
     
+    const addToCartHandler = () => {
+        // push the redirect onto the history prop
+        history.push(`/cart/${match.params.id}?qty=${qty}`)
+    }
+
     return (
         <>
             <LinkContainer to="/">
@@ -104,9 +112,33 @@ const ProductScreen = ({ match }) => {
                                         </Col>
                                     </Row>
                                 </ListGroup.Item>
+
+                                {/* only show this if they're in stock */}
+                                {product.countInStock > 0 && (
+                                    <ListGroup.Item>
+                                        <Row>
+                                            <Col>Qty</Col>
+                                            <Col>
+                                                <Form.Control
+                                                    as='select'
+                                                    value={qty}
+                                                    onChange={(e) => {
+                                                        return setQty(e.target.value);
+                                                    }}>
+                                                        {/* E.G. let's say the countInStock is 5, we want an array like [0, 1, 2, 3, 4] */}
+                                                        {[...Array(product.countInStock).keys()].map(x => {
+                                                            return <option key={x + 1} value={x + 1}> {x + 1} </option>;
+                                                        })}
+                                                </Form.Control>
+                                            </Col>
+                                        </Row>
+                                    </ListGroup.Item>
+                                )}
+
                                 <ListGroup.Item>
                                     {/* class="btn-block" lets the element stretch all the way across */}
                                     <Button
+                                        onClick={addToCartHandler}
                                         className="btn-block"
                                         type="button"
                                         disabled={product.countInStock  === 0}

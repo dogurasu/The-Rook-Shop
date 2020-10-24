@@ -31,7 +31,7 @@ const UserListScreen = ({ history }) => {
         } else { // we're not admin
             history.push('/login');
         }
-    }, [dispatch, history, successDelete]) // if we delete a user, we want to reload our list of users
+    }, [dispatch, history, successDelete, userInfo]) // if we delete a user, we want to reload our list of users
 
     // dispatch delete user
     const deleteHandler = (id) => {
@@ -67,7 +67,7 @@ const UserListScreen = ({ history }) => {
                                     }
                                 </td>
                                 <td>
-                                    <LinkContainer to={`/user/${user._id}/edit`}>
+                                    <LinkContainer to={`/admin/user/${user._id}/edit`}>
                                         <Button variant='light' className='btn-sm'>
                                             <i className='fas fa-edit'></i>
                                         </Button>

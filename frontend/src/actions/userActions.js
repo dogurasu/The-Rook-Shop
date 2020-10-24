@@ -20,7 +20,10 @@ import {
     USER_LIST_RESET,
     USER_DELETE_REQUEST,
     USER_DELETE_FAIL,
-    USER_DELETE_SUCCESS
+    USER_DELETE_SUCCESS,
+    USER_UPDATE_REQUEST,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_FAIL
 } from '../constants/userConstants';
 import { ORDER_LIST_SINGLE_RESET } from "../constants/orderConstants";
 
@@ -237,8 +240,8 @@ export const deleteUser = (id) => async (dispatch, getState) => {
             }
         }
 
-        // put request to 'api/v1/users/profile'
-        const { data } = await axios.delete(`/api/v1/users/${id}`, config);
+        // delete request to 'api/v1/users/profile'
+        await axios.delete(`/api/v1/users/${id}`, config);
 
         // we want to dispatch our user details
         dispatch({
@@ -248,6 +251,40 @@ export const deleteUser = (id) => async (dispatch, getState) => {
     } catch(err) {
         dispatch({
             type: USER_DELETE_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+export const updateUser = (user) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_REQUEST
+        })
+
+        // getState.userLogin.userInfo
+        const { userLogin: { userInfo }} = getState();
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        // put request to 'api/v1/users/profile'
+        const { data } = await axios.put(`/api/v1/users/${user._id}`, user, config);
+
+        // we want to dispatch our user details
+        dispatch({
+            type: USER_UPDATE_SUCCESS,
+        })
+
+        // we also want details success to pass the data that we've updated in the user 
+        dispatch({ type: USER_DETAILS_SUCCESS, payload: data })
+
+    } catch(err) {
+        dispatch({
+            type: USER_UPDATE_FAIL,
             payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
     }

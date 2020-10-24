@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { getUserDetails } from '../actions/userActions';
+import { getUserDetails, updateUser } from '../actions/userActions';
+import { USER_UPDATE_RESET } from '../constants/userConstants';
 
 const UserEditScreen = ({ match, history }) => {
     const userId = match.params.id;
@@ -22,22 +23,32 @@ const UserEditScreen = ({ match, history }) => {
     const userDetails = useSelector(state => state.userDetails);
     const { loading, error, user } = userDetails;
 
+    // we need to get the userUpdate state bc we need to know if it's successful or not
+    const userUpdate = useSelector(state => state.userUpdate);
+    const { loading: loadingUpdate , error: errorUpdate, success: successUpdate } = userUpdate;
+
     // redirect if already logged in
     useEffect(() => {
-        // userId comes from url
-        if (!user.name || user._id !== userId) {
-            dispatch(getUserDetails(userId));
-        } else { // user is already here
-            setName(user.name);
-            setEmail(user.email);
-            setIsAdmin(user.isAdmin);
+        // check for success update - if success update, we want to reset the user state or the update state and redirect to user list
+        if (successUpdate) {
+            dispatch({ type: USER_UPDATE_RESET }); // reset
+            history.push('/admin/userlist'); // redirect
+        } else { // else, successUpdate is not true
+            // userId comes from url
+            if (!user.name || user._id !== userId) {
+                dispatch(getUserDetails(userId));
+            } else { // user is already here
+                setName(user.name);
+                setEmail(user.email);
+                setIsAdmin(user.isAdmin);
+            }
         }
-    }, [dispatch, userId, user])
+    }, [dispatch, userId, user, successUpdate, history])
 
     // this is where we want to dispatch the register action
     const submitHandler = (e) => {
         e.preventDefault();
-        
+        dispatch(updateUser({ _id: userId, name, email, isAdmin }))
     }
 
     return (
@@ -47,6 +58,8 @@ const UserEditScreen = ({ match, history }) => {
             </Link>
             <FormContainer>
                 <h1>Edit User</h1>
+                {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
                 {loading 
                     ? <Loader /> 
                     : error 

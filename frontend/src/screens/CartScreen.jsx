@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
 import Message from '../components/Message';
-import { addToCart, removeFromCart } from '../actions/cardActions';
+import { addToCart, removeFromCart } from '../actions/cartActions';
 
 // let's get product ID from 'match'
 // we need location.search for the '?qty...' part of the url

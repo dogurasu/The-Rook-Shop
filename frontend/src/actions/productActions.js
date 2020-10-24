@@ -6,6 +6,12 @@ import {
     PRODUCT_DETAILS_REQUEST,
     PRODUCT_DETAILS_SUCCESS,
     PRODUCT_DETAILS_FAIL,
+    PRODUCT_DELETE_REQUEST,
+    PRODUCT_DELETE_SUCCESS,
+    PRODUCT_DELETE_FAIL,
+    PRODUCT_CREATE_REQUEST,
+    PRODUCT_CREATE_SUCCESS,
+    PRODUCT_CREATE_FAIL,
 } from '../constants/productConstants';
 
 // does pretty much what our useEffect hook did in our Home component - fetched products data from /api/v1/products, mapped them thru
@@ -54,6 +60,68 @@ export const listProductDetails = (id) => async (dispatch) => {
         dispatch({
             type: PRODUCT_DETAILS_FAIL,
             payload: error.response && error.response.data.message ? error.response.data.message : error.message// if error.response.data.message exists, use that. else: just use the error message
+        })
+    }
+}
+
+export const deleteProduct = (product_id) => async (dispatch, getState) => { 
+    try {
+        dispatch({
+            type: PRODUCT_DELETE_REQUEST
+        })
+
+        // getState.userLogin.userInfo
+        const { userLogin: { userInfo }} = getState();
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        // DELETE to 'api/v1/products/:product_id'
+        await axios.delete(`/api/v1/products/${product_id}`, config);
+
+        // we want to dispatch our user details
+        dispatch({
+            type: PRODUCT_DELETE_SUCCESS,
+        })
+
+    } catch(err) {
+        dispatch({
+            type: PRODUCT_DELETE_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+// just creates that sample product
+export const createProduct = () => async (dispatch, getState) => { 
+    try {
+        dispatch({
+            type: PRODUCT_CREATE_REQUEST
+        })
+
+        // getState.userLogin.userInfo
+        const { userLogin: { userInfo }} = getState();
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        // POST new product to 'api/v1/products/'
+        const { data } = await axios.post(`/api/v1/products`, {}, config);
+
+        // we want to dispatch our user details
+        dispatch({
+            type: PRODUCT_CREATE_SUCCESS,
+            payload: data
+        })
+
+    } catch(err) {
+        dispatch({
+            type: PRODUCT_CREATE_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
     }
 }

@@ -1,10 +1,10 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { productListReducer, productDetailsReducer } from './reducers/productReducers';
+import { productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer } from './reducers/productReducers';
 import { cartReducer } from './reducers/cartReducers';
 import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListSingleReducer } from './reducers/orderReducers';
+import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListSingleReducer, } from './reducers/orderReducers';
 // initialize reducer - {} if we don't have any yet
 // important bc productList is what shows as that piece of state
 
@@ -23,8 +23,9 @@ const reducer = combineReducers({
     orderListSingle: orderListSingleReducer,
     userList: userListReducer,
     userDelete: userDeleteReducer,
-    userUpdate: userUpdateReducer
-
+    userUpdate: userUpdateReducer,
+    productDelete: productDeleteReducer,
+    productCreate: productCreateReducer,
 });
 
 // we're going to check if items exist in the cart (fetch it from localstorage)

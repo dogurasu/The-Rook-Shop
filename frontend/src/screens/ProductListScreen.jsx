@@ -6,7 +6,8 @@ import FormContainer from '../components/FormContainer';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { userListReducer } from '../reducers/userReducers';
-import { listProducts } from '../actions/productActions';
+import { listProducts, deleteProduct, createProduct } from '../actions/productActions';
+import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
 
 const ProductListScreen = ({ history, match }) => {
     // create dispatch
@@ -16,28 +17,43 @@ const ProductListScreen = ({ history, match }) => {
     const productList = useSelector(state => state.productList);
     const { loading, error, products } = productList;
 
+    // we want to get success value from 'productDeleteState'
+    // you're renaming 'loading' to loadingDelete, left to right which is weird
+    const productDelete = useSelector(state => state.productDelete);
+    const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete;
+
+    const productCreate = useSelector(state => state.productCreate);
+    const { loading: loadingCreate, error: errorCreate, success: successCreate, product: createdProduct } = productCreate;
+
     // bring userLogin to check if user visiting link is admin or not 
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
 
     useEffect(() => {
+        // as soon as our useEffect runs, we want to dispatch reset
+        dispatch({ type: PRODUCT_CREATE_RESET })
+
         // if we're an admin, dispatch listUsers action
-        if (userInfo && userInfo.isAdmin) {
-            dispatch(listProducts());
-        } else { // we're not admin
+        if (!userInfo.isAdmin) {
             history.push('/login');
         }
-    }, [dispatch, history, userInfo]) // if we delete a user, we want to reload our list of users
+
+        if (successCreate) {
+            history.push(`/admin/product/${createdProduct._id}/edit`)
+        } else { // display listed products
+            dispatch(listProducts());
+        }
+    }, [dispatch, history, userInfo, successDelete, successCreate, createdProduct]) // if we delete a product, we want to reload our list of products
 
     // dispatch delete product
     const deleteHandler = (id) => {
         if (window.confirm('Are you sure?')) {
-            // DELETE PRODUCTS
+            dispatch(deleteProduct(id))
         }
     }
 
-    const createProductHandler = (product) => {
-        // CREATE PRODUCT
+    const createProductHandler = () => {
+        dispatch(createProduct());
     }
 
     return (
@@ -48,15 +64,19 @@ const ProductListScreen = ({ history, match }) => {
                 </Col>
                 <Col className='text-right'>
                     <Button className='my-3' onClick={createProductHandler}>
-                        <i className='fas fa-plus'></i>Create Product
+                        <i className='fas fa-plus'></i> Create Product
                     </Button>
                 </Col>
             </Row>
+            {loadingCreate && <Loader />}
+            {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
+            {loadingDelete && <Loader />}
+            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
             { loading 
-                ? <Loader /> 
-                : error 
-                ? <Message variant='danger'>{error}</Message> 
-                : (
+            ? <Loader /> 
+            : error 
+            ? <Message variant='danger'>{error}</Message> 
+            : (
                 <Table striped bordered hover responsive className='table-sm'>
                     <thead>
                         <tr>

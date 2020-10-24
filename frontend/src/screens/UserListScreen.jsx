@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { listUsers } from '../actions/userActions';
+import { listUsers, deleteUser } from '../actions/userActions';
 import FormContainer from '../components/FormContainer';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -20,6 +20,10 @@ const UserListScreen = ({ history }) => {
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
 
+    // bring in some state to get userDelete
+    const userDelete = useSelector(state => state.userDelete);
+    const { success: successDelete } = userDelete;
+
     useEffect(() => {
         // if we're an admin, dispatch listUsers action
         if (userInfo && userInfo.isAdmin) {
@@ -27,10 +31,13 @@ const UserListScreen = ({ history }) => {
         } else { // we're not admin
             history.push('/login');
         }
-    }, [dispatch, history])
+    }, [dispatch, history, successDelete]) // if we delete a user, we want to reload our list of users
 
+    // dispatch delete user
     const deleteHandler = (id) => {
-        console.log('delete');
+        if (window.confirm('Are you sure?')) {
+            dispatch(deleteUser(id));
+        }
     }
 
     return (

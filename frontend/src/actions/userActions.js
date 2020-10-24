@@ -17,7 +17,10 @@ import {
     USER_LIST_REQUEST,
     USER_LIST_FAIL,
     USER_LIST_SUCCESS,
-    USER_LIST_RESET
+    USER_LIST_RESET,
+    USER_DELETE_REQUEST,
+    USER_DELETE_FAIL,
+    USER_DELETE_SUCCESS
 } from '../constants/userConstants';
 import { ORDER_LIST_SINGLE_RESET } from "../constants/orderConstants";
 
@@ -214,6 +217,37 @@ export const listUsers = () => async (dispatch, getState) => {
     } catch(err) {
         dispatch({
             type: USER_LIST_FAIL,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+// updateUserProfile action -- takes in user, need to send a token so we getState
+export const deleteUser = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: USER_DELETE_REQUEST
+        })
+
+        // getState.userLogin.userInfo
+        const { userLogin: { userInfo }} = getState();
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        // put request to 'api/v1/users/profile'
+        const { data } = await axios.delete(`/api/v1/users/${id}`, config);
+
+        // we want to dispatch our user details
+        dispatch({
+            type: USER_DELETE_SUCCESS,
+        })
+
+    } catch(err) {
+        dispatch({
+            type: USER_DELETE_FAIL,
             payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
     }

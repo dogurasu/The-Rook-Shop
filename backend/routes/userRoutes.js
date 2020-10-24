@@ -4,11 +4,15 @@ import {
     authUser,
     getUserProfile,
     registerUser,
-    updateUserProfile
+    updateUserProfile,
+    getUsers
 } from '../controllers/userController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { admin, protect } from '../middleware/authMiddleware.js';
 
-router.route('/').post(registerUser); // not protected, public
+router
+    .route('/')
+    .post(registerUser) // not protected, public
+    .get(protect, admin, getUsers)
 router.post('/login', authUser);
 // we want to protect these route so we just add our middleware as our first arg
 // depending on the request we receive, we'll route req to .get or .put

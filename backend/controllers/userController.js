@@ -120,9 +120,19 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     }
 })
 
+// @desc    GET all users
+// @route   GET /api/v1/users
+// @access  Private/Admin -- it's private AND you have to be an admin
+const getUsers = asyncHandler(async (req, res) => {
+    // pass an empty obj because we want to get all users
+    const users = await User.find({});
+    res.json(users);
+})
+
 export {
     authUser,
     registerUser,
     getUserProfile,
-    updateUserProfile
+    updateUserProfile,
+    getUsers
 }

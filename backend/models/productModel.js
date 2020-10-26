@@ -4,17 +4,22 @@ import mongoose from 'mongoose'
 // user field is to know which admin (user) created our product
 // reviews is an array of Review objects based off of the reviewSchema
 const reviewSchema = mongoose.Schema({
-    name: { 
+    name: {
         type: String,
         required: true,
     },
-    rating: { 
+    rating: {
         type: Number,
         required: true,
     },
     comment: {
         type: String,
         required: true,
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
     },
 }, {
     timestamps: true,

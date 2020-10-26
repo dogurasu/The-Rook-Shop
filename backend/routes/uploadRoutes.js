@@ -29,7 +29,7 @@ const checkFileType = (file, cb) => {
     // if extname=true which means we had a valid file type 
     // and
     // mimetype exists
-    if (extname && mimetype) {
+    if (extension_name && mimetype) {
         return cb(null, true); // null for error
     } else { // we're missing at least 1
         return cb('Images only!'); // pass an error message in

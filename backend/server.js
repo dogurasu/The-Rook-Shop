@@ -2,6 +2,7 @@ import path from 'path';
 import express from 'express'
 import dotenv from 'dotenv';
 import colors from 'colors';
+import morgan from 'morgan';
 import connectDB from './config/db.js';
 import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 // import products from './data/products.js';
@@ -20,6 +21,11 @@ const app = express();
 
 // hooked up express.json middleware to accept JSON data in the req.body
 app.use(express.json())
+
+// middleware for morgan
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev')) // dev just gives us http methods, status etc
+}
 
 app.get('/', (req, res) => {
     res.send('API is running...');

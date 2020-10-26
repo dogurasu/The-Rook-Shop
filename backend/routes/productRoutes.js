@@ -4,7 +4,8 @@ import {
     getProductById, 
     deleteProduct, 
     updateProduct,
-    createProduct
+    createProduct,
+    createProductReview
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 // initialize an instance of Express's Router
@@ -15,6 +16,10 @@ const router = express.Router();
 router.route('/')
     .get(getProducts)
     .post(protect, admin, createProduct)
+
+// for product reviews
+router.route('/:id/reviews')
+    .post(protect, createProductReview)
 
 router.route('/:id')
     .get(getProductById)

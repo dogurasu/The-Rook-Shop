@@ -5,7 +5,8 @@ import {
     deleteProduct, 
     updateProduct,
     createProduct,
-    createProductReview
+    createProductReview,
+    getTopProducts
 } from '../controllers/productController.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
 // initialize an instance of Express's Router
@@ -20,6 +21,8 @@ router.route('/')
 // for product reviews
 router.route('/:id/reviews')
     .post(protect, createProductReview)
+
+router.get('/top', getTopProducts)
 
 router.route('/:id')
     .get(getProductById)

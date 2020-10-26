@@ -8,7 +8,17 @@ import asyncHandler from 'express-async-handler';
 //              - e.g. to purchase a product you need to be logged in; you need to send a token to specific routes (private if purchasing)
 //              - in this case, this is a public route to our API
 const getProducts = asyncHandler(async (req, res) => {
-    const products = await Product.find({});
+    const pageSize = 2;
+
+    
+    const keyword = req.query.keyword ? {
+        name: {
+            $regex: req.query.keyword,
+            $options: 'i'
+        }
+    } : {};
+
+    const products = await Product.find({ ...keyword });
 
     // purposefully output an error to test our error catching in Redux
     // res.status(401);
@@ -121,7 +131,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 
         product.reviews.push(review);
         product.numReviews = product.reviews.length;
-
+       
         // calculate the average of the product's ratings
         product.rating = product.reviews.reduce((acc, item) => item.rating + acc, 0) / product.reviews.length;
         

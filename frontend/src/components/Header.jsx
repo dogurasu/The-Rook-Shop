@@ -1,7 +1,9 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, Container, Row, Col, NavDropdown } from 'react-bootstrap';
+import SearchBox from './SearchBox'
 import { logout } from '../actions/userActions';
 
 const Header = () => {
@@ -25,6 +27,8 @@ const Header = () => {
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
+                        {/* we pass in history as props w/ a Route rrender property bc we can't directly access props in Header */}
+                        <Route render={({ history }) => <SearchBox history={history}/>} />
                         <Nav className="ml-auto">
                             <LinkContainer to="/cart">
                                 <Nav.Link ><i className="fas fa-shopping-cart"></i> Cart</Nav.Link>

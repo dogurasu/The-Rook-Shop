@@ -8,7 +8,9 @@ import { listProducts } from '../actions/productActions'
 // import axios from 'axios'; // get rid of bc now we have Redux
 // import products from '../products'; // now we request products from our backend
 
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
+    const keyword = match.params.keyword;
+
     // we don't need to set products for our local, component level state anymore
     // const [products, setProducts ] = useState([]);
 
@@ -37,9 +39,9 @@ const HomeScreen = () => {
         // getProducts();
 
         // use the dispatch in useEffect hook because it does the same thing, makes request to backend to get products
-        dispatch(listProducts());
+        dispatch(listProducts(keyword));
 
-    }, [dispatch])
+    }, [dispatch, keyword])
 
     // check to see if if it's loading so we can output a spinner
     // we can also check to see if there's an error

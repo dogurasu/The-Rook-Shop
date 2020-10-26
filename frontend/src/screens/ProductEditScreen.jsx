@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { listProductDetails } from '../actions/productActions';
+import { listProductDetails, updateProduct } from '../actions/productActions';
+import { PRODUCT_UPDATE_RESET } from '../constants/productConstants';
 
 const ProductEditScreen = ({ match, history }) => {
     const productId = match.params.id;
@@ -17,32 +19,78 @@ const ProductEditScreen = ({ match, history }) => {
     const [ category, setCategory ] = useState('');
     const [ countInStock, setCountInStock ] = useState(0);
     const [ description, setDescription ] = useState('');
+    const [ uploading, setUploading ] = useState(false);
 
     const dispatch = useDispatch();
 
     const productDetails = useSelector(state => state.productDetails);
     const { loading, error, product } = productDetails;
     
+    const productUpdate = useSelector(state => state.productUpdate);
+    const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
+
     useEffect(() => {
-        
-        // userId comes from url
-        if (!product.name || product._id !== productId) {
-            dispatch(listProductDetails(productId));
-        } else { // user is already here
-            setName(product.name);
-            setPrice(product.email);
-            setImage(product.image);
-            setBrand(product.brand);
-            setCategory(product.category);
-            setCountInStock(product.countInStock);
-            setDescription(product.description);
+        if (successUpdate) {
+            dispatch({ type: PRODUCT_UPDATE_RESET })
+            history.push('/admin/productlist');
+        } else {
+            // userId comes from url
+            if (!product.name || product._id !== productId) {
+                dispatch(listProductDetails(productId));
+            } else { // user is already here
+                setName(product.name);
+                setPrice(product.email);
+                setImage(product.image);
+                setBrand(product.brand);
+                setCategory(product.category);
+                setCountInStock(product.countInStock);
+                setDescription(product.description);
+            }
         }
-    }, [dispatch, productId, product, history])
+    }, [dispatch, productId, product, history, successUpdate])
+
+    const uploadFileHandler = async (e) => {
+        // when we upload, we get access to the '.files' array  of the e.target object
+        // u have the ability to upload multiple files
+        // in this case, we only take the first upload because you can only upload 1 file
+
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('image', file);
+        setUploading(true); // sets spinner to run while uploading
+
+        try {
+            const config = {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }
+
+            const { data } = await axios.post('/api/v1/uploads', formData, config);
+
+            setImage(data);
+            setUploading(false);
+        } catch(error) {
+            console.error(error);
+            setUploading(false);
+        }
+    }
 
     // this is where we want to dispatch the register action
     const submitHandler = (e) => {
         e.preventDefault();
         // Update Product
+        
+        dispatch(updateProduct({
+            _id: productId,
+            name,
+            price,
+            image,
+            brand,
+            category,
+            description,
+            countInStock
+        }));
     }
 
     return (
@@ -52,6 +100,8 @@ const ProductEditScreen = ({ match, history }) => {
             </Link>
             <FormContainer>
                 <h1>Edit Product</h1>
+                {loadingUpdate && <Loader />}
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
                 {loading 
                     ? <Loader /> 
                     : error 
@@ -89,6 +139,8 @@ const ProductEditScreen = ({ match, history }) => {
                                     onChange={(e) => setImage(e.target.value)}
                                 >
                                 </Form.Control>
+                                <Form.File id='image-file' label='Choose File' custom onChange={uploadFileHandler}></Form.File>
+                                {uploading && <Loader />}
                             </Form.Group>
 
                             <Form.Group controlId="brand">

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { PayPalButton } from 'react-paypal-button-v2';
-import { Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
+import { Row, Col, ListGroup, Image, Card, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getOrderDetails, payOrder } from '../actions/orderActions';
-import { ORDER_PAY_RESET } from '../constants/orderConstants';
+import { getOrderDetails, payOrder, deliverOrder } from '../actions/orderActions';
+import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from '../constants/orderConstants';
 
 // we want orderid so we pass in 'match' -> don't need history
 const OrderScreen = ({ match }) => {
@@ -17,11 +17,17 @@ const OrderScreen = ({ match }) => {
 
     const dispatch = useDispatch();
 
+    const userLogin = useSelector(state => state.userLogin);
+    const { userInfo } = userLogin;
+
     const orderDetails = useSelector(state => state.orderDetails);
     const { order, loading, error } = orderDetails;
 
     const orderPay = useSelector(state => state.orderPay);
     const { loading:loadingPay, success:successPay } = orderPay; // we already have a loading and success (?) so we can rename them
+
+    const orderDeliver = useSelector(state => state.orderDeliver);
+    const { loading:loadingDeliver, success:successDeliver } = orderDeliver; // we already have a loading and success (?) so we can rename them
 
     if (!loading) {
         // calculate prices
@@ -60,8 +66,9 @@ const OrderScreen = ({ match }) => {
         // check for the order and also make sure that the orderId matches the Id in the URL
         // if it doesn't, then dispatch getOrderDetails() to fetch the most recent order
         // also after we have a successful dispatch (pay)
-        if (!order || order._id !== orderId || successPay) {
+        if (!order || order._id !== orderId || successPay || successDeliver ) {
             dispatch({ type: ORDER_PAY_RESET }) // if we don't do this, once you pay it's going to keep refreshing
+            dispatch({ type: ORDER_DELIVER_RESET }) // once we say the item has been delivered, 
             dispatch(getOrderDetails(orderId)); // we want to dispatch our actions
         } else if(!order.isPaid) { // if not paid, check if paypal script is there
             if (!window.paypal) {
@@ -70,12 +77,16 @@ const OrderScreen = ({ match }) => {
                 setSdkReady(true); // set sdk to true bc paypalscript exists
             }
         }
-    }, [order, orderId, successPay])
+    }, [order, orderId, successPay, successDeliver ])
 
     // this event handler will update database to paid
     const successPaymentHandler = (paymentResult) => {
         console.log(paymentResult);
         dispatch(payOrder(orderId, paymentResult));
+    }
+
+    const deliveredHandler = () => {
+        dispatch(deliverOrder(order));
     }
 
     return (
@@ -185,6 +196,14 @@ const OrderScreen = ({ match }) => {
                                     {!sdkReady ? <Loader /> : (
                                         <PayPalButton amount={order.totalPrice} onSuccess={successPaymentHandler} />
                                     )}
+                                </ListGroup.Item>
+                            )}
+                            {loadingDeliver && <Loader />}
+                            {userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                                <ListGroup.Item>
+                                    <Button type='button' className='btn btn-block' onClick={deliveredHandler}>
+                                        Mark as delivered
+                                    </Button>
                                 </ListGroup.Item>
                             )}
                         </ListGroup>

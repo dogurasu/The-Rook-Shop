@@ -8,9 +8,10 @@ import asyncHandler from 'express-async-handler';
 //              - e.g. to purchase a product you need to be logged in; you need to send a token to specific routes (private if purchasing)
 //              - in this case, this is a public route to our API
 const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 2;
+    const pageSize = 5;
+    // if the pageNumber isn't included, then '1' will be used by default
+    const page = Number(req.query.pageNumber) || 1; // "?pageNumber-1" or smth
 
-    
     const keyword = req.query.keyword ? {
         name: {
             $regex: req.query.keyword,
@@ -18,13 +19,17 @@ const getProducts = asyncHandler(async (req, res) => {
         }
     } : {};
 
-    const products = await Product.find({ ...keyword });
+    const count = await Product.countDocuments({ ...keyword }); // gives us the amt of related products
+     // limit the amt of products we get - skip whatever the page size is & page - 1
+    const products = await Product.find({ ...keyword })
+        .limit(pageSize)
+        .skip(pageSize * (page - 1));
 
     // purposefully output an error to test our error catching in Redux
     // res.status(401);
     // throw new Error('Not Authorized');
 
-    res.json(products);
+    res.json({ products, page, pages: Math.ceil(count / pageSize), });
 })
 
 // @desc   Fetch single product

@@ -13,6 +13,10 @@ import {
     ORDER_LIST_SINGLE_SUCCESS,
     ORDER_LIST_SINGLE_FAILURE,
     ORDER_LIST_SINGLE_RESET,
+    ORDER_LIST_ALL_REQUEST,
+    ORDER_LIST_ALL_SUCCESS,
+    ORDER_LIST_ALL_FAILURE,
+    ORDER_LIST_ALL_RESET
 } from '../constants/orderConstants.js';
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -101,6 +105,27 @@ export const orderListSingleReducer = (state = { orders: [] }, action) => {
         case ORDER_LIST_SINGLE_RESET:
             return {
                 orders: []
+            }
+        default:
+            return state
+    }
+}
+
+export const orderListAllReducer = (state = { orders: [] }, action) => {
+    switch(action.type) {
+        case ORDER_LIST_ALL_REQUEST:
+            return {
+                loading: true
+            }
+        case ORDER_LIST_ALL_SUCCESS:
+            return {
+                loading: false,
+                orders: action.payload
+            }
+        case ORDER_LIST_ALL_FAILURE:
+            return {
+                loading: false,
+                error: action.payload
             }
         default:
             return state

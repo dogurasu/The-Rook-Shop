@@ -10,7 +10,10 @@ import {
     ORDER_PAY_FAILURE,
     ORDER_LIST_SINGLE_REQUEST,
     ORDER_LIST_SINGLE_SUCCESS,
-    ORDER_LIST_SINGLE_FAILURE
+    ORDER_LIST_SINGLE_FAILURE,
+    ORDER_LIST_ALL_REQUEST,
+    ORDER_LIST_ALL_SUCCESS,
+    ORDER_LIST_ALL_FAILURE
 } from '../constants/orderConstants.js';
 import axios from 'axios';
 
@@ -142,6 +145,38 @@ export const listSingleList = () => async (dispatch, getState) => {
     } catch(err) {
         dispatch({
             type: ORDER_LIST_SINGLE_FAILURE,
+            payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+// we don't have to pass anything in here - it knows who we are by our token
+export const listAllOrders = () => async (dispatch, getState) => { 
+    try {
+        dispatch({
+            type: ORDER_LIST_ALL_REQUEST
+        })
+
+        // getState.userLogin.userInfo
+        const { userLogin: { userInfo }} = getState();
+        const config = {
+            headers: {
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        }
+
+        // get to 'api/v1/orders/myorders'
+        const { data } = await axios.get(`/api/v1/orders`, config);
+
+        // we want to dispatch our user details
+        dispatch({
+            type: ORDER_LIST_ALL_SUCCESS,
+            payload: data,
+        })
+
+    } catch(err) {
+        dispatch({
+            type: ORDER_LIST_ALL_FAILURE,
             payload: err.response && err.response.data.message ? err.response.data.message : err.message
         })
     }

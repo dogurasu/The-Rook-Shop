@@ -1,10 +1,32 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
-import { productListReducer, productDetailsReducer, productDeleteReducer, productCreateReducer, productUpdateReducer } from './reducers/productReducers';
+import { 
+    productListReducer, 
+    productDetailsReducer, 
+    productDeleteReducer, 
+    productCreateReducer, 
+    productUpdateReducer,
+    productReviewCreateReducer,
+    productTopRatedReducer
+} from './reducers/productReducers';
 import { cartReducer } from './reducers/cartReducers';
-import { userLoginReducer, userRegisterReducer, userDetailsReducer, userUpdateProfileReducer, userListReducer, userDeleteReducer, userUpdateReducer } from './reducers/userReducers';
-import { orderCreateReducer, orderDetailsReducer, orderPayReducer, orderListSingleReducer, orderListAllReducer } from './reducers/orderReducers';
+import { userLoginReducer, 
+    userRegisterReducer, 
+    userDetailsReducer, 
+    userUpdateProfileReducer, 
+    userListReducer, 
+    userDeleteReducer, 
+    userUpdateReducer 
+} from './reducers/userReducers';
+import { orderCreateReducer, 
+    orderDetailsReducer, 
+    orderPayReducer, 
+    orderListSingleReducer,
+    orderListAllReducer, 
+    orderDeliverReducer 
+} from './reducers/orderReducers';
+
 // initialize reducer - {} if we don't have any yet
 // important bc productList is what shows as that piece of state
 
@@ -27,7 +49,10 @@ const reducer = combineReducers({
     productDelete: productDeleteReducer,
     productCreate: productCreateReducer,
     productUpdate: productUpdateReducer,
-    orderListAll: orderListAllReducer
+    orderListAll: orderListAllReducer,
+    orderDeliver: orderDeliverReducer,
+    productReviewCreate: productReviewCreateReducer,
+    productTopRated: productTopRatedReducer,
 });
 
 // we're going to check if items exist in the cart (fetch it from localstorage)

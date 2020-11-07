@@ -19,7 +19,10 @@ import {
     PRODUCT_CREATE_REVIEW_REQUEST,
     PRODUCT_CREATE_REVIEW_SUCCESS,
     PRODUCT_CREATE_REVIEW_FAIL,
-    PRODUCT_CREATE_REVIEW_RESET
+    PRODUCT_CREATE_REVIEW_RESET,
+    PRODUCT_TOP_REQUEST,
+    PRODUCT_TOP_SUCCESS,
+    PRODUCT_TOP_FAIL
 } from '../constants/productConstants';
 
 // a reducer takes in 2 things, initial state (can be default arg of emtpy obj), and an action -> we're going to dispatch an action to productReducer (action will be an object with a 'type' and maybe a 'payload' of data)
@@ -34,7 +37,12 @@ export const productListReducer = (state = { products: [] }, action) => {
         case PRODUCT_LIST_REQUEST:
             return { loading: true, products: [] } // when we make the request, we want the component to knwo that it's currently fetching/loading
         case PRODUCT_LIST_SUCCESS:
-            return { loading: false, products: action.payload } // we send the payload of data that is returned with success
+            return { 
+                loading: false, 
+                products: action.payload.products, 
+                pages: action.payload.pages, 
+                page: action.payload.page 
+            } // we send the payload of data that is returned with success
         case PRODUCT_LIST_FAIL:
             return { loading: false, error: action.payload } // we send error in the payload
         default:
@@ -116,6 +124,19 @@ export const productReviewCreateReducer = ( state = {}, action) => {
             return { loading: false, error: action.payload }
         case PRODUCT_CREATE_REVIEW_RESET:
             return {}
+        default:
+            return state
+    }
+}
+
+export const productTopRatedReducer = ( state = { products: [] }, action) => {
+    switch(action.type) {
+        case PRODUCT_TOP_REQUEST:
+            return { loading: true, products: [] }
+        case PRODUCT_TOP_SUCCESS:
+            return { loading: false, products: action.payload }
+        case PRODUCT_TOP_FAIL:
+            return { loading: false, error: action.payload }
         default:
             return state
     }

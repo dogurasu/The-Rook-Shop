@@ -22,7 +22,7 @@ const HomeScreen = ({ match }) => {
 
     // we're using hooks here
     // in the past, we would've used a higher order method called Connect and we'd have to map state to props
-    const dispatch = useDispatch(); 
+    const dispatch = useDispatch();
 
     // i want to get the 'productList' piece of state that we provided as an argument to the combineReducers function in our store
     // useSelector takes in an arrow function w/ 'state' as arg and returns which part of state we want

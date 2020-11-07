@@ -18,6 +18,9 @@ import {
     PRODUCT_CREATE_REVIEW_REQUEST,
     PRODUCT_CREATE_REVIEW_SUCCESS,
     PRODUCT_CREATE_REVIEW_FAIL,
+    PRODUCT_TOP_REQUEST,
+    PRODUCT_TOP_SUCCESS,
+    PRODUCT_TOP_FAIL,
 
 } from '../constants/productConstants';
 
@@ -30,11 +33,11 @@ import {
 // Redux thunk allows us to add a function w/in a function
 // this is how we 'dispatch' these actions
 //      - using the 'dispatch' arg
-export const listProducts = () => async (dispatch) => {
+export const listProducts = (keyword = '', pageNumber = '') => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_LIST_REQUEST });
 
-        const { data } = await axios.get('/api/v1/products');
+        const { data } = await axios.get(`/api/v1/products?keyword=${keyword}&pageNumber=${pageNumber}`);
 
         // if we successfully retrieve data from our backend, we dispatch it with 'success'
         // else, we'll catch the error down there
@@ -193,6 +196,26 @@ export const createProductReview = (productId, review) => async (dispatch, getSt
         dispatch({
             type: PRODUCT_CREATE_REVIEW_FAIL,
             payload: err.response && err.response.data.message ? err.response.data.message : err.message
+        })
+    }
+}
+
+export const listTopProducts = () => async (dispatch) => {
+    try {
+        dispatch({ type: PRODUCT_TOP_REQUEST });
+
+        const { data } = await axios.get(`/api/v1/products/top`);
+
+        // if we successfully retrieve data from our backend, we dispatch it with 'success'
+        // else, we'll catch the error down there
+        dispatch({
+            type: PRODUCT_TOP_SUCCESS,
+            payload: data
+        })
+    } catch(error) {
+        dispatch({
+            type: PRODUCT_TOP_FAIL,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message// if error.response.data.message exists, use that. else: just use the error message
         })
     }
 }

@@ -27,10 +27,6 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev')) // dev just gives us http methods, status etc
 }
 
-app.get('/', (req, res) => {
-    res.send('API is running...');
-})
-
 // mount our routes for our API
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/users', userRoutes);
@@ -43,6 +39,20 @@ app.get('/api/v1/config/paypal', (req, res) => res.send(process.env.PAYPAL_CLIEN
 // __dirname is not available for ES modules, it's only available for Common JS (require syntax)
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+// only set the frontend's build folder as the static folder if we're running in production (not development)
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '/frontend/build')))
+
+    // get any route that's not our API and point to that index html in our build folder
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'frontend', 'build', 'index.html'))
+    });
+} else {
+    app.get('/', (req, res) => {
+        res.send('API is running...');
+    })
+}
 
 app.use(notFound);
 

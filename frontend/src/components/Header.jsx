@@ -23,7 +23,7 @@ const Header = () => {
                 <Container>
                     {/* use LinkContainer from 'react-router-bootstrap' for wrapping Link */}
                     <LinkContainer to="/">
-                        <Navbar.Brand >E Comm</Navbar.Brand>
+                        <Navbar.Brand >The Rook Shop</Navbar.Brand>
                     </LinkContainer>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">

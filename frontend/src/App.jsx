@@ -22,9 +22,6 @@ import OrderListScreen from './screens/OrderListScreen';
 const App = () => {
   return (
     <Router>
-      <Helmet>
-        <title>{"Welcome to The Rook Shop"}</title>
-      </Helmet>
       <Header />
       {/* py-3 gives u spacing at the top */}
       <main className="py-3">

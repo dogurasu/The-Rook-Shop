@@ -1,6 +1,6 @@
 import path from 'path';
 import express from 'express'
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 import colors from 'colors';
 import morgan from 'morgan';
 import connectDB from './config/db.js';
@@ -13,7 +13,7 @@ import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 
-dotenv.config();
+// dotenv.config();
 
 connectDB();
 

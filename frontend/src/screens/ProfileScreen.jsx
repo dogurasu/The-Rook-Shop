@@ -7,6 +7,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listSingleList } from '../actions/orderActions';
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
 
 const ProfileScreen = ({ location, history }) => {
     const [ name, setName ] = useState('');
@@ -39,7 +40,8 @@ const ProfileScreen = ({ location, history }) => {
         if (!userInfo) { // if user not logged in, redirect to '/login'
             history.push('/login');
         } else { // check for user
-            if (!user.name) {
+            if (!user || !user.name || success) {
+                dispatch({ type: USER_UPDATE_PROFILE_RESET });
                 dispatch(getUserDetails('profile')); // takes in an id but in this case, takes in a profile
                 dispatch(listSingleList());
             } else {
@@ -47,7 +49,7 @@ const ProfileScreen = ({ location, history }) => {
                 setEmail(user.email);
             }
         }
-    }, [dispatch, history, user]) // if userInfo changes, we want to redirect
+    }, [dispatch, history, userInfo, user, success]) // if userInfo changes, we want to redirect
 
     // this is where we want to dispatch the register action
     const submitHandler = (e) => {

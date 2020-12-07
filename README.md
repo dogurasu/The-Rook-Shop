@@ -1,5 +1,7 @@
 # [The Rook Shop](https://therookshop.herokuapp.com/ "The Rook Shop")
+
 ![alt text](https://github.com/dogurasu/The-Rook-Shop/blob/master/uploads/trs-1.png "The Rook Shop 1" =250x)
+
 ![alt text](https://github.com/dogurasu/The-Rook-Shop/blob/master/uploads/trs-2.png "The Rook Shop 2" =250x)
 
 ## Description

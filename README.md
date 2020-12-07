@@ -7,6 +7,13 @@
 A full-stack E-Commerce web application made with **MongoDB, Express.js, React/Redux, Node.js** or the **MERN** stack. This web app is complete with **User Authentication and Authorization** thanks to [JSON Web Tokens (JWT)](https://jwt.io/ "JWT") and keeps track of Users, Products, Orders. It utilizes the [PayPal API](https://developer.paypal.com/docs/api/overview/ "PayPal Developer Docs") for customer payment information and checkout. It also uses React Bootstrap for creating re-usable React components to use throughout the app. I built the backend API that returns Products, Users, and Orders using [Postman](https://www.postman.com/ "Postman").
 
 ## Installation
+1. Make sure you have the Node Package manager (NPM) and git installed
+2. In your terminal, enter "git clone https://github.com/dogurasu/The-Rook-Shop.git" if you have a registered SSH key or "git clone https://github.com/dogurasu/The-Rook-Shop.git" if you do not
+3. Change directories into your newly cloned repository with "cd ./The-Rook-Shop"
+4. Make sure to install all dependencies in the 'frontend', 'backend', and the root directories with: "cd frontend" and "npm install ." and "cd backend" and "npm install ."
+5. This app uses a PayPal API, a MongoDB cluster, and JSON Web Tokens so you need to make sure to go and sign up for a PayPal API key, register for a MongoDB cluster, and put them in a ".env" file
+6. Add additional variables like "NODE_ENV" and "PORT" and set them to "development" and "3000" respectively.
+7. Finally, run "npm run start" in the "backend" directory and "npm run start" in the "frontend" directory in a separate terminal. Your web application should be up and running on something like "localhost:3000"
 
 
 ## Contributing:
